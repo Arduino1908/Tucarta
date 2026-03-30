@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta especial</title>
+
+    <style>
+        body {
+            margin: 0;
+            overflow-y: auto; 
+            font-family: 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at 30% 20%, #c084fc, transparent 40%),
+                        radial-gradient(circle at 70% 80%, #7c3aed, transparent 40%),
+                        linear-gradient(135deg, #1e1b4b, #0f0f1a);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .titulo {
+            margin-top: 30px;
+            width: 100%;
+            text-align: center;
+            font-size: 28px;
+            font-style: italic;
+            color: #e9d5ff;
+            text-shadow: 0 0 15px #c084fc;
+        }
+
+        .container {
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .envelope {
+            position: relative;
+            width: 220px;
+            height: 140px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .base {
+            width: 100%;
+            height: 100%;
+            background: #111827;
+            border: 2px solid #c084fc;
+            border-radius: 10px;
+            position: absolute;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flap {
+            width: 100%;
+            height: 100%;
+            background: #1e1b4b;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: top;
+            transition: transform 0.8s ease;
+            clip-path: polygon(0 0, 100% 0, 50% 60%);
+            border-top: 2px solid #c084fc;
+            z-index: 2;
+        }
+
+        .envelope.open .flap {
+            transform: rotateX(180deg);
+        }
+
+        .letter {
+            display: none;
+            background: #0f0f1a;
+            padding: 25px;
+            border-radius: 15px;
+            width: 85%;
+            max-width: 380px;
+            margin: 20px auto;
+            box-shadow: 0 0 30px #c084fc;
+            border: 1px solid #c084fc;
+            color: #e9d5ff;
+            line-height: 1.6;
+            z-index: 5;
+        }
+
+        #texto {
+            white-space: pre-line;
+            font-size: 16px;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: 1px solid #c084fc;
+            border-radius: 10px;
+            background: transparent;
+            color: #e9d5ff;
+            cursor: pointer;
+            box-shadow: 0 0 10px #c084fc;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #c084fc;
+            color: black;
+            box-shadow: 0 0 20px #e9d5ff;
+        }
+
+        .petal {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: #f0abfc;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: fall linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="titulo">Especialmente para ti 💜</div>
+
+    <div class="container">
+        <div class="envelope" onclick="abrirCarta()" id="sobre">
+            <div class="flap"></div>
+            <div class="base">Presiona la carta</div>
+        </div>
+
+        <div class="letter" id="carta">
+            <p id="texto"></p>
+
+            <form action="https://formsubmit.co/mauhohuitz8577@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="Respuesta a tu carta">
+                <input type="hidden" name="_captcha" value="false">
+                
+                <button type="submit" name="Respuesta" value="Acepto">Acepto</button>
+                <button type="submit" name="Respuesta" value="No acepto">No acepto</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const mensaje = `En la serenidad de un instante cualquiera,
+apareces tú, como una certeza inesperada,
+con esa forma tan tuya de iluminar el mundo
+sin siquiera proponértelo.
+
+No sé en qué momento tu presencia
+comenzó a quedarse en mis pensamientos,
+ni cuándo tu sonrisa
+se volvió motivo suficiente para detener el tiempo.
+
+Hay algo en ti que inspira calma,
+pero también despierta esa emoción
+que solo nace cuando alguien
+realmente vale la pena.
+
+Por eso hoy me atrevo,
+no con prisa, sino con sinceridad,
+a proponerte algo sencillo, pero especial:
+compartir un momento contigo.
+
+Quizá una conversación sin apuros,
+quizá unas risas que surjan sin planearse,
+quizá descubrir que, fuera de la rutina,
+también podemos coincidir.
+
+Si aceptas, prometo algo muy simple:
+ser genuino, escucharte,
+y hacer de ese encuentro
+un recuerdo que valga la pena guardar.`;
+
+        function abrirCarta() {
+            const sobre = document.getElementById("sobre");
+            sobre.classList.add("open");
+
+            setTimeout(() => {
+                document.getElementById("carta").style.display = "block";
+                escribirTexto();
+            }, 800);
+        }
+
+        function escribirTexto() {
+            let i = 0;
+            const velocidad = 35;
+            const textoElemento = document.getElementById("texto");
+
+            function escribir() {
+                if (i < mensaje.length) {
+                    textoElemento.textContent += mensaje.charAt(i);
+                    i++;
+                    // Autoscroll para que en móvil no se pierdan los botones
+                    window.scrollTo(0, document.body.scrollHeight);
+                    setTimeout(escribir, velocidad);
+                }
+            }
+            escribir();
+        }
+
+        /* Generar pétalos */
+        for (let i = 0; i < 30; i++) {
+            let petal = document.createElement("div");
+            petal.classList.add("petal");
+            petal.style.left = Math.random() * 100 + "vw";
+            petal.style.animationDuration = (4 + Math.random() * 4) + "s";
+            petal.style.delay = Math.random() * 5 + "s";
+            document.body.appendChild(petal);
+        }
+    </script>
+
+</body>
+</html>
